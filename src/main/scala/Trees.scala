@@ -9,7 +9,7 @@ object Trees {
     printInorder(tree, tree(index).right)
   }
 
-  def main(args: Array[String]): Unit = {
+  def swapNodesAtLevelsOfMultiplesOfK(args: Array[String]): Unit = {
     val n = io.StdIn.readInt
     val tree = new Array[Node](n + 1)
     (1 to n).foreach(i => io.StdIn.readLine.split(" ").map(_.toInt).grouped(2) foreach (a => tree(i) = Node(a.head, a.last)))
@@ -29,14 +29,35 @@ object Trees {
 
       swapAtMultiplesOfDepth(1, 1)
 
-//      (1 to n)
-//        .filter(i => ((math.log(i) / math.log(2)).floor.toInt + 1) % d == 0)
-//        .foreach(i => {
-//          println(i)
-//          tree(i) = Node(tree(i).right, tree(i).left)
-//        })
-//    printInorder(tree, 1)
+      //      (1 to n)
+      //        .filter(i => ((math.log(i) / math.log(2)).floor.toInt + 1) % d == 0)
+      //        .foreach(i => {
+      //          println(i)
+      //          tree(i) = Node(tree(i).right, tree(i).left)
+      //        })
+      //    printInorder(tree, 1)
       println
     })
   }
+
+
+  def main(args: Array[String]): Unit = {
+
+    def checkIfBST(arr: Array[Int]): Boolean = {
+      if (arr.length <= 1) return true
+
+      val partitionIndex = arr.indexWhere(_ > arr(0), 1)
+
+      if(partitionIndex == -1) checkIfBST(arr.slice(1, arr.length))
+      else if (arr.indexWhere(_ < arr(0), partitionIndex+1) != -1) false
+      else checkIfBST(arr.slice(1, partitionIndex)) && checkIfBST(arr.slice(partitionIndex, arr.length))
+    }
+
+    (1 to io.StdIn.readInt).foreach(_ => {
+      val n = io.StdIn.readInt
+      val arr = io.StdIn.readLine.split(" ").map(_.toInt)
+      if (checkIfBST(arr)) println("Yes") else println("No")
+    })
+  }
+
 }

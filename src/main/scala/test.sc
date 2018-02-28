@@ -1,9 +1,7 @@
-val arr = new Array[Int](10)
+def query(l: Int, r: Int, i: Int): Int = {
+  if (l == r) 0
+  else math.min(query(l, (l + r) / 2, 2 * i + 1), query((l + r) / 2, r, 2 * i + 2))
+}
 
-arr(0) = 1
-arr(1) = 5
-(2 to 9).foreach(i => {
-  arr(i) = 2 * arr(i - 1) - arr(i - 2) + 3
-})
-
-arr
+val f1 = (query _).tupled
+//f1.tupled
