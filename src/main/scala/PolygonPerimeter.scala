@@ -42,7 +42,7 @@ object PolygonPerimeter {
       case 1 => pt
       case -1 => acc
       case 0 => if (acc.x < pt.x) acc else pt
-    })
+    }) // leftmost bottommost point
 
     val pts_sorted: List[Point] = p0 :: pts.filter(!_.equals(p0)).sortWith(compare(p0)).toList
 
