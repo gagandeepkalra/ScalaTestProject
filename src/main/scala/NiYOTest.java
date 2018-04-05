@@ -51,7 +51,7 @@ public class NiYOTest {
     }
 
 
-    public static void main(String args[]) throws Exception{
+    public static void input(String args[]) throws Exception{
         BufferedReader br = new BufferedReader(
                 new InputStreamReader(System.in));
 
