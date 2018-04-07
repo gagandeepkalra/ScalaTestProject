@@ -1,7 +1,9 @@
-def query(l: Int, r: Int, i: Int): Int = {
-  if (l == r) 0
-  else math.min(query(l, (l + r) / 2, 2 * i + 1), query((l + r) / 2, r, 2 * i + 2))
+case class pair(a: Long, h: Long) {
+  def value(p: Int): Long = a + (p - 1) * h
 }
 
-val f1 = (query _).tupled
-//f1.tupled
+val arr: Array[pair] = Array(pair(2, 5), pair(5, 40), pair(3, 10))
+
+arr.sortBy(_.value(3))
+
+arr
