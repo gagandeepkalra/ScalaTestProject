@@ -1,9 +1,13 @@
-case class pair(a: Long, h: Long) {
-  def value(p: Int): Long = a + (p - 1) * h
-}
+def abs(x: Double) = if (x < 0) -x else x
 
-val arr: Array[pair] = Array(pair(2, 5), pair(5, 40), pair(3, 10))
+def sqrtIter(guess: Double, x: Double): Double =
+  if (isGoodEnough(guess, x)) guess
+  else sqrtIter(improve(guess, x), x)
 
-arr.sortBy(_.value(3))
+def isGoodEnough(guess: Double, x: Double) = abs(guess * guess - x) / x < 0.0001
 
-arr
+def improve(guess: Double, x: Double) = (guess + x / guess) / 2
+
+def sqrt(x: Double) = sqrtIter(1.0, x)
+
+sqrt(16)
