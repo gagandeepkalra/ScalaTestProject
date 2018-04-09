@@ -6,9 +6,9 @@ object CoinChange {
 
   case class Pair(money: Int, coins: Int)
 
-  val cache: mutable.Map[Pair, Int] = collection.mutable.Map[Pair, Int]()
+  val cache: mutable.Map[Pair, Long] = collection.mutable.Map[Pair, Long]()
 
-  def count(money: Int, denominations: List[Int]): Int = {
+  def count(money: Int, denominations: List[Int]): Long = {
     if (denominations.isEmpty) 0 else {
       val pair = Pair(money, denominations.length)
       if (cache.contains(pair)) cache(pair)
