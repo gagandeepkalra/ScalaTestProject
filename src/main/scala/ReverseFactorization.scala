@@ -1,4 +1,4 @@
-
+import scala.collection.immutable.Queue
 
 object ReverseFactorization {
 
@@ -6,32 +6,35 @@ object ReverseFactorization {
   def main(args: Array[String]): Unit = {
 
     // Input
+
     val Array(n, k) = io.StdIn.readLine.split(" ").map(_.toInt)
-    val elements = io.StdIn.readLine.split(" ").map(_.toInt).sorted.toList
+    val factors = io.StdIn.readLine.split(" ").map(_.toInt).sorted.toList
 
-    val parentMap = collection.mutable.Map[Int, Int]()
+    breadthFirstSearch(Queue(1), Map(1 -> 1))
 
-    val queue: collection.mutable.Queue[Int] = collection.mutable.Queue[Int]()
+    // Functional BFS
 
-    queue.enqueue(1)
-    parentMap(1) = 1
+    def breadthFirstSearch(queue: Queue[Int], parentMap: Map[Int, Int]): Unit = {
+      if (queue.isEmpty) println(-1)
+      else if (queue.front == n) print_result(n)(parentMap)
+      else {
+        val (element, q1) = queue.dequeue
+        val parentMultiplier = parentMap(element)
 
-    while (queue.nonEmpty && queue.front != n) {
-      val x = queue.dequeue()
-      val parentMultiplier = parentMap(x)
+        val (q, m) = factors
+          .filter(i => i >= parentMultiplier && element * i <= n && !parentMap.contains(element * i))
+          .foldLeft[(Queue[Int], Map[Int, Int])]((q1, parentMap)) {
+          case ((queue: Queue[Int], parentMap: Map[Int, Int]), i: Int) => (queue.enqueue(element * i), parentMap + (element * i -> i))
+        }
 
-      elements.filter(i => i >= parentMultiplier && x*i <= n && !parentMap.contains(x * i)).foreach(i => {
-        parentMap(x * i) = i
-        queue.enqueue(x * i)
-      })
+        breadthFirstSearch(q, m)
+      }
     }
 
-    def print_result(x: Int): Unit = {
+    def print_result(x: Int)(implicit parentMap: Map[Int, Int]): Unit = {
       if (x != 1) print_result(x / parentMap(x))
       print(x + " ")
     }
-
-    if (queue.isEmpty) println(-1) else print_result(queue.front)
   }
 
 }
