@@ -17,7 +17,7 @@ object SherlockAndTheMaze {
 
       (i, j, k, l) match {
 
-        case (_, 1, 0, 1) => arr(i)(1)(220)(1) = 1
+        case (_, 1, 0, 1) => arr(i)(1)(0)(1) = 1
         case (_, 1, _, 1) => arr(i)(1)(k)(1) = 0
 
         case (1, _, 0, 0) => arr(1)(j)(0)(0) = 1
