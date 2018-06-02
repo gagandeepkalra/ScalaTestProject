@@ -3,11 +3,14 @@ import scala.collection.mutable
 object SkiingInSingapore {
 
   def memoize[I, O](f: I => O): I => O = new mutable.HashMap[I, O]() {
-    override def apply(key: I) = getOrElseUpdate(key, f(key))
+    override def apply(key: I): O = getOrElseUpdate(key, f(key))
   }.asInstanceOf[I => O]
 
   case class Solution(start: Int, end: Int, len: Int) extends Ordered[Solution] {
-    override def compare(that: Solution): Int = if (this.len == that.len) (this.start - this.end) - (that.start - that.end) else this.len - that.len
+    override def compare(that: Solution): Int =
+      if (this.len == that.len) {
+        that.end - this.end
+      } else this.len - that.len
   }
 
   def main(args: Array[String]): Unit = {
@@ -25,12 +28,11 @@ object SkiingInSingapore {
       case (i, j) =>
         val cell = grid(i)(j)
         val solutions: List[Solution] = delta
-          .map(p => (i + p._1, j + p._2))
+          .map(d => (i + d._1, j + d._2))
           .filter { case (x, y) => isValid(x, y) && cell > grid(x)(y) }
           .map(update)
 
         val bestSolution = if (solutions.nonEmpty) solutions.max else Solution(cell, cell, 0)
-
         Solution(cell, bestSolution.end, bestSolution.len + 1)
     }
 
@@ -43,5 +45,4 @@ object SkiingInSingapore {
 
     println(result.len + "" + (result.start - result.end))
   }
-
 }
