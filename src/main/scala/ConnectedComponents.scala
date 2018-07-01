@@ -5,7 +5,7 @@ object ConnectedComponents {
     class Node {
       var connectedNodes: List[Int] = Nil
 
-      def connectTo(i: Int) = connectedNodes = i :: connectedNodes
+      def connectTo(i: Int): Unit = connectedNodes = i :: connectedNodes
     }
 
     def connect(x: Int, y: Int): Unit = {
@@ -17,9 +17,11 @@ object ConnectedComponents {
       val visited = Array.fill[Boolean](size)(false)
 
       def connectedComponentsSizeStartingFrom(i: Int): Int = {
-        if (visited(i)) return 0
-        visited(i) = true
-        nodes(i).connectedNodes.map(connectedComponentsSizeStartingFrom).sum + 1
+        if (visited(i)) 0
+        else {
+          visited(i) = true
+          nodes(i).connectedNodes.map(connectedComponentsSizeStartingFrom).sum + 1
+        }
       }
 
       (1 until size).filter(!visited(_)).map(connectedComponentsSizeStartingFrom).map(math.sqrt(_).ceil.toInt).sum
