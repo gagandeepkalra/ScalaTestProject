@@ -2,6 +2,8 @@ package GoogleCodeJam2018RoundE
 
 /*
 
+https://codejam.withgoogle.com/codejam/contest/4394486/dashboard#s=p1
+
 Problem
 The milk tea in China is very delicious. There are many binary ("either-or") options for customizing a milk tea order,
 such as "with ice"/"no ice", "with sugar"/"no sugar", "with bubbles"/"no bubbles", "with pudding"/"no pudding", and so on.

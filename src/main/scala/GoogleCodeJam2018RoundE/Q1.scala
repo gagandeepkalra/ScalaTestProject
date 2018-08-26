@@ -2,6 +2,8 @@ package GoogleCodeJam2018RoundE
 
 /*
 
+https://codejam.withgoogle.com/codejam/contest/4394486/dashboard#s=p0
+
 Problem
 Yogurt can be a nutritious part of an appetizer, main course, or dessert, but it must be consumed before it expires, and
 it might expire quickly! Moreover, different cups of yogurt might expire on different days.
