@@ -4,26 +4,22 @@ object BalancedParentheses {
 
   def isBalanced(source: Array[Char]): Boolean = {
 
-    def checkIfBalanced(i: Int): Int = { // returns index of right parentheses corresponding to i
-      if (i >= source.length || source(i) == ')') -1
-      else {
-        var ii = i + 1
-        while (ii < source.length && source(ii) == '(') {
-          ii = checkIfBalanced(ii)
-          if (ii == -1) return -1
-
-          ii += 1
-        }
-        if (ii < source.length && source(ii) == ')') ii else -1
+    def balanced(idx: Int, count: Int): Boolean = {
+      if (idx == source.length) count >= 0
+      else if (count < 0) false
+      else source(idx) match {
+        case '(' => balanced(idx + 1, count + 1)
+        case ')' => balanced(idx + 1, count - 1)
+        case _ => balanced(idx + 1, count)
       }
     }
 
-    var i = 0
-    while (i < source.length) { // testing cases like: ()()(())
-      i = checkIfBalanced(i)
-      if (i == -1) return false else i += 1
-    }
-    true
+    balanced(0, 0)
+  }
 
+  def main(args: Array[String]): Unit = {
+    assert(!isBalanced("((())))".toArray))
+    assert(isBalanced("((()))".toArray))
+    assert(isBalanced("((a))(bc)sww(w(s(e)re)e)w__q".toArray))
   }
 }
