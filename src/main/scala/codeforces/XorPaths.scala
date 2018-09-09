@@ -50,10 +50,10 @@ object XorPaths {
       }
     }
 
-    def recurBackward(x: Int, y: Int, xor: Long, depth: Int)(implicit middle: mutable.Map[(Int, Int), mutable.Map[Long, Int]]): Int = {
-      if (depth == 1) middle.getOrElse((x, y), collection.mutable.Map[Long, Int]()).getOrElse(xor ^ k, 0)
+    def recurBackward(x: Int, y: Int, xor: Long, depth: Int)(implicit middle: mutable.Map[(Int, Int), mutable.Map[Long, Int]]): Long = {
+      if (depth == 1) middle.getOrElse((x, y), collection.mutable.Map[Long, Int]()).getOrElse(xor ^ k, 0).toLong
       else {
-        var ans = 0
+        var ans: Long = 0
         if (x - 1 >= 0) {
           ans += recurBackward(x - 1, y, xor ^ source(x)(y), depth - 1)
         }
