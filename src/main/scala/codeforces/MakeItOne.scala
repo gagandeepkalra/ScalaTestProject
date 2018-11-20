@@ -1,0 +1,5 @@
+package codeforces
+
+object MakeItOne {
+
+}
