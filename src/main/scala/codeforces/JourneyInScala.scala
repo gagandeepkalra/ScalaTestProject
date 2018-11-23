@@ -4,8 +4,9 @@ package codeforces
 
 http://codeforces.com/problemset/problem/839/C
 DFS
+
  */
-object Journeyy {
+object JourneyInScala {
 
   type Graph = Map[Int, Set[Int]]
 

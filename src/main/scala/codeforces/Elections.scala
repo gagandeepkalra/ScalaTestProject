@@ -1,5 +1,10 @@
 package codeforces
 
+/*
+
+http://codeforces.com/contest/1043/problem/A
+
+ */
 object Elections {
 
   def main(args: Array[String]): Unit = {

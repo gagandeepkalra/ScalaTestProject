@@ -1,4 +1,4 @@
-//package GoogleCodeJam2018RoundF
+package GoogleCodeJam2018RoundF
 
 object CommonAnagrams {
 
