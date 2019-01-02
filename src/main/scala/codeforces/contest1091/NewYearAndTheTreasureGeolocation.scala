@@ -4,6 +4,11 @@ import java.io.BufferedReader
 import java.io.InputStreamReader
 import java.util.StringTokenizer
 
+/*
+
+https://codeforces.com/contest/1091/problem/B
+
+ */
 object NewYearAndTheTreasureGeolocation {
 
   val br = new BufferedReader(new InputStreamReader(System.in))

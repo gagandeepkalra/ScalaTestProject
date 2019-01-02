@@ -1,5 +1,10 @@
 package codeforces.contest1091
 
+/*
+
+https://codeforces.com/contest/1091/problem/A
+
+ */
 object NewYearAndTheChristmasOrnament {
 
   def main(args: Array[String]): Unit = {
