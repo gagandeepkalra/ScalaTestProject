@@ -11,34 +11,32 @@ public class PrimeDays {
      *
      * @param numRows
      * @param numColumns
-     * @param lot        2-D matrix with 3 values, 0 -> obstacle, 1-> available, 9 -> destination
+     * @param area       2-D matrix with 3 values, 0 -> obstacle, 1-> available, 9 -> destination
      * @return minimum length of path to reach destination starting from (0, 0)
      */
-    static int removeObstacle(int numRows, int numColumns, List<List<Integer>> lot) {
-        boolean[][] visited = new boolean[numRows][numColumns];
+    static int minimumDistance(int numRows, int numColumns, List<List<Integer>> area) {
+        boolean[][] visitedMatrix = new boolean[numRows][numColumns];
 
-        PriorityQueue<List<Integer>> queue = new PriorityQueue<>(Comparator.comparingInt(o -> o.get(2)));
-        queue.add(Arrays.asList(0, 0, 1)); // (r, c, d)
+        PriorityQueue<List<Integer>> priorityQueue = new PriorityQueue<>(Comparator.comparingInt(o -> o.get(2)));
+        priorityQueue.add(Arrays.asList(0, 0, 1)); // (r, c, d)
 
-        int[] dx = {-1, 0, 1, 0};
-        int[] dy = {0, 1, 0, -1};
+        int[] deltaX = {-1, 0, 1, 0};
+        int[] deltaY = {0, 1, 0, -1};
 
-        while (!queue.isEmpty()) {
-            List<Integer> val = queue.poll();
-            int r = val.get(0), c = val.get(1), d = val.get(2);
+        while (!priorityQueue.isEmpty()) {
+            List<Integer> head = priorityQueue.poll();
+            int r = head.get(0), c = head.get(1), d = head.get(2);
 
-            if (lot.get(r).get(c) == 9) return d;
-            else if (!visited[r][c]) {
-                visited[r][c] = true;
+            if (area.get(r).get(c) == 9) return d;
+            else if (!visitedMatrix[r][c]) {
+                visitedMatrix[r][c] = true;
                 for (int i = 0; i < 4; i++) {
-                    int newR = r + dx[i], newC = c + dy[i];
-                    if (0 <= newR && newR < numRows && 0 <= newC && newC < numColumns &&
-                            !visited[newR][newC] && lot.get(newR).get(newC) != 0)
-                        queue.add(Arrays.asList(newR, newC, d + 1));
+                    int newR = r + deltaX[i], newC = c + deltaY[i];
+                    if (0 <= newR && newR < numRows && 0 <= newC && newC < numColumns && !visitedMatrix[newR][newC] && area.get(newR).get(newC) != 0)
+                        priorityQueue.add(Arrays.asList(newR, newC, d + 1));
                 }
             }
         }
-
         return -1;
     }
 
