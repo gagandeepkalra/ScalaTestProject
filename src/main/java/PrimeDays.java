@@ -1,7 +1,4 @@
-import java.util.Arrays;
-import java.util.Comparator;
-import java.util.List;
-import java.util.PriorityQueue;
+import java.util.*;
 import java.util.stream.Collectors;
 
 public class PrimeDays {
@@ -55,5 +52,39 @@ public class PrimeDays {
                 .sorted(Comparator.comparingInt(ls -> ls.get(0) * ls.get(0) + ls.get(1) * ls.get(1)))
                 .limit(numSteakhouses)
                 .collect(Collectors.toList());
+    }
+
+    /**
+     * Sort the list into old and new members based on if values are numerical(new),
+     * Sort the old members, then append the new ones in there original order.
+     *
+     * @param numberOfBoxes
+     * @param boxList
+     * @return
+     */
+    static List<String> orderedJunctionBoxes(int numberOfBoxes, List<String> boxList) {
+        List<List<String>> oldList = new ArrayList<>();
+        List<String> newList = new ArrayList<>();
+        boxList.forEach(str -> {
+            String[] strArray = str.split(" ");
+
+            boolean isNew = true;
+            for (int i = 1; i < strArray.length; i++) isNew = isNew & strArray[i].matches("^[0-9]*$");
+
+            if (isNew)
+                newList.add(str);
+            else
+                oldList.add(Arrays.asList(strArray[0], str.replaceFirst(strArray[0], "")));
+        });
+
+        oldList.sort((o1, o2) -> {
+            int compareResult = o1.get(1).compareTo(o2.get(1));
+            if (compareResult == 0) return o1.get(0).compareTo(o2.get(0));
+            else return compareResult;
+        });
+
+        List<String> resultList = oldList.stream().map(ls -> ls.get(0) + " " + ls.get(1)).collect(Collectors.toList());
+        resultList.addAll(newList);
+        return resultList;
     }
 }
