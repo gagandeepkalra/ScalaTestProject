@@ -7,7 +7,7 @@ package codeforces.contest1197
   * Consider rooftop R values and sum each with the minimum space
   */
 object CultureCode {
-  import scala.collection.mutable
+  import collection.mutable
 
   val MOD: Long = 1000000000 + 7
 
@@ -19,24 +19,24 @@ object CultureCode {
   def main(args: Array[String]): Unit = {
     val n = io.StdIn.readInt()
 
-    val pairsMap: mutable.TreeMap[R, mutable.HashMap[L, Int]] = // sorted By r
-      mutable.TreeMap[R, collection.mutable.HashMap[L, Int]]()
+    val pairsMap: mutable.TreeMap[R, mutable.TreeMap[L, Int]] = // sorted By r
+      mutable.TreeMap[R, mutable.TreeMap[L, Int]]()
 
     for (_ <- 1 to n) {
       val Array(upper, lower) = io.StdIn.readLine().split(" ").map(_.toInt)
-      val lowerMap = pairsMap.getOrElseUpdate(upper, mutable.HashMap())
+      val lowerMap = pairsMap.getOrElseUpdate(upper, mutable.TreeMap())
       lowerMap.update(lower, lowerMap.getOrElse(lower, 0) + 1)
     }
 
-    val lastL: L = pairsMap.last._2.maxBy(_._1)._1
+    val lastL: L = pairsMap.last._2.lastKey
 
     @scala.annotation.tailrec
-    def loop(ls: List[(R, mutable.HashMap[L, Int])],
+    def loop(ls: List[(R, mutable.TreeMap[L, Int])],
              rValues: List[Int]): List[Int] = {
       ls match {
         case Nil => rValues
         case (r, lMap) :: tail =>
-          val l = lMap.maxBy(_._1)._1
+          val l = lMap.lastKey
           if (lastL < l) // if this one's covered, then so are the rest
             r :: rValues
           else
