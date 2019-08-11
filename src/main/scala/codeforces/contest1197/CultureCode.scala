@@ -20,7 +20,7 @@ object CultureCode {
     val n = io.StdIn.readInt()
 
     val pairsMap: mutable.TreeMap[R, mutable.HashMap[L, Int]] = // sorted By r
-      collection.mutable.TreeMap[R, collection.mutable.HashMap[L, Int]]()
+      mutable.TreeMap[R, collection.mutable.HashMap[L, Int]]()
 
     for (_ <- 1 to n) {
       val Array(upper, lower) = io.StdIn.readLine().split(" ").map(_.toInt)
@@ -37,7 +37,7 @@ object CultureCode {
         case Nil => rValues
         case (r, lMap) :: tail =>
           val l = lMap.maxBy(_._1)._1
-          if (lastL < l)
+          if (lastL < l) // if this one's covered, then so are the rest
             r :: rValues
           else
             loop(tail, r :: rValues)
@@ -46,9 +46,6 @@ object CultureCode {
 
     val rValuesToConsider =
       loop(pairsMap.from(lastL + 1).toList.reverse, List())
-
-    implicit val ordering: Ordering[(R, Space, Result)] =
-      (x: (R, Space, Result), y: (R, Space, Result)) => x._1 - y._1
 
     val doneRValues =
       collection.mutable.TreeMap[R, (Space, Result)](1 -> (1, 1))
@@ -60,43 +57,36 @@ object CultureCode {
       val lastR: (R, (Space, Result)) = doneRValues.last
       (doneRValues.put _).tupled {
 
-        var minSpace = lastR._2._1 + r - lastR._1
-        var minSpaceResult: Result = lastR._2._2
+        r -> lSeq.foldLeft[(Space, Result)](
+          (lastR._2._1 + r - lastR._1, lastR._2._2)
+        ) {
+          case ((minSpace, minSpaceResult), (l, pairOccurrences)) =>
+            val (prevR, (prevSpace, prevSpaceResult)) = findLowerBound(l)
 
-        for ((l, pairOccurrences) <- lSeq) {
-          val (prevR, (prevSpace, prevSpaceResult)) = findLowerBound(l)
+            val space = prevSpace + l - prevR
+            val spaceResult = (prevSpaceResult * pairOccurrences) % MOD
 
-          val space = prevSpace + l - prevR
-          val spaceResult = (prevSpaceResult * pairOccurrences) % MOD
-
-          if (minSpace == space)
-            minSpaceResult = (minSpaceResult + spaceResult) % MOD
-          else if (space < minSpace) {
-            minSpace = space
-            minSpaceResult = spaceResult
-          }
+            if (minSpace == space)
+              (minSpace, (minSpaceResult + spaceResult) % MOD)
+            else if (space < minSpace)
+              (space, spaceResult)
+            else
+              (minSpace, minSpaceResult)
         }
-
-        r -> (minSpace, minSpaceResult)
       }
     }
 
     val (_, res) = {
-      var (minSpace, minSpaceResult) = (Int.MaxValue, 0L)
-
-      for {
-        r <- rValuesToConsider
-        (space, spaceResult) = doneRValues(r)
-      } {
-        if (minSpace == space)
-          minSpaceResult = (minSpaceResult + spaceResult) % MOD
-        else if (space < minSpace) {
-          minSpace = space
-          minSpaceResult = spaceResult
-        }
+      rValuesToConsider.foldLeft[(Space, Result)]((Int.MaxValue, 0L)) {
+        case ((minSpace, minSpaceResult), r) =>
+          val (space, spaceResult) = doneRValues(r)
+          if (minSpace == space)
+            (minSpace, (minSpaceResult + spaceResult) % MOD)
+          else if (space < minSpace)
+            (space, spaceResult)
+          else
+            (minSpace, minSpaceResult)
       }
-
-      (minSpace, minSpaceResult)
     }
 
     println(res)
