@@ -1,7 +1,8 @@
 package codeforces.contest1213
 
 /*
-https://codeforces.com/contest/1213/problem/G
+ * Disjoint Set
+ * https://codeforces.com/contest/1213/problem/G
  */
 object PathQueries {
 
