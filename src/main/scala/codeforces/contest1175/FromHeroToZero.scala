@@ -1,4 +1,4 @@
-package codeforces
+package codeforces.contest1175
 
 /*
 https://codeforces.com/contest/1175/problem/A
