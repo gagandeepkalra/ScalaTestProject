@@ -26,7 +26,7 @@ object BookReading {
       val result: Map[Int, Int] = multiples.toSet[Int].map(i => i -> calculatePagesCanRead(i)).toMap
 
       println {
-        s"Case #$t: ${multiples.map(result).sum}"
+        s"Case #$t: ${multiples.map(result andThen (_.toLong)).sum}"
       }
 
     }
