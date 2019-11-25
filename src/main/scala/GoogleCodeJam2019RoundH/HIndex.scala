@@ -2,6 +2,9 @@ package GoogleCodeJam2019RoundH
 
 import scala.collection.mutable
 
+/*
+https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050edd/00000000001a274e
+ */
 object HIndex {
 
   type HIndex = Int
