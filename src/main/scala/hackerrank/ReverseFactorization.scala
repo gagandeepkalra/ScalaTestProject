@@ -1,19 +1,21 @@
+package hackerrank
+
 import scala.collection.immutable.Queue
 
+/*
+https://www.hackerrank.com/challenges/reverse-factorization/problem
+ */
 object ReverseFactorization {
 
-
   def main(args: Array[String]): Unit = {
-
     // Input
-
     val Array(n, k) = io.StdIn.readLine.split(" ").map(_.toInt)
     val factors = io.StdIn.readLine.split(" ").map(_.toInt).sorted.toList
 
     breadthFirstSearch(Queue(1), Map(1 -> 1))
 
     // Functional BFS
-
+    @scala.annotation.tailrec
     def breadthFirstSearch(queue: Queue[Int], parentMap: Map[Int, Int]): Unit = {
       if (queue.isEmpty) println(-1)
       else if (queue.front == n) print_result(n)(parentMap)
