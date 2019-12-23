@@ -1,4 +1,4 @@
-package WeekOfCode37
+package hackerrank.WeekOfCode37
 
 object SimpleLanguage {
 

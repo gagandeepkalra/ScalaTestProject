@@ -1,3 +1,5 @@
+package hackerrank
+
 import scala.collection.mutable
 
 /*
