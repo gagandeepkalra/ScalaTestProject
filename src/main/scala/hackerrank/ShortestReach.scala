@@ -3,6 +3,11 @@ package hackerrank
 import scala.collection.immutable.Queue
 import scala.collection.mutable
 
+/*
+https://www.hackerrank.com/challenges/bfsshortreach/problem
+
+Breadth first search
+ */
 object ShortestReach {
   type Graph[T] = mutable.Map[T, mutable.Set[T]]
 
