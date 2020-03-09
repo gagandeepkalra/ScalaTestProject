@@ -23,7 +23,7 @@ object SynchronousShopping {
     }
 
     val graph: Array[List[(Int, Int)]] = {
-      val arr = Array.fill[List[(Int, Int)]](n + 1)(Nil)
+      val arr = Array.fill[List[(Int, Int)]](m + 1)(Nil)
       (1 to m).foreach { _ =>
         val Array(x, y, w) = io.StdIn.readLine.split(" ").map(_.toInt)
         arr(x) = (y, w) :: arr(x)
