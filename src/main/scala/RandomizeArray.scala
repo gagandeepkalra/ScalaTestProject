@@ -1,4 +1,4 @@
-class RandomaizeArray(_nums: Array[Int]) {
+class RandomizeArray(_nums: Array[Int]) {
 
   /** Resets the array to its original configuration and return it. */
   def reset(): Array[Int] = _nums
