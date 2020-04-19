@@ -3,7 +3,7 @@ package google.kickstart._2020.B
 /*
 https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ffc8/00000000002d82e6
 
-Array
+[Array]
 
 Count hills
  */
