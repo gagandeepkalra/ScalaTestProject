@@ -3,7 +3,7 @@ package google.kickstart._2020.A
 /*
 https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ffc7/00000000001d40bb
 
-[DP]
+[Dynamic Programming]
 
 bottom up considering only one selection at each level, dp(n, p) = given n levels and p total choices
  */
