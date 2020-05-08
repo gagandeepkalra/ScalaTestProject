@@ -11,7 +11,6 @@ let dp(n, k) = min cost to have at most k breakages in 1 ... n, then
 let cost(i, j) = min cost to make all same (total - max frequency); precompute
 
 then dp(n, k) = min (dp(i, k-1) + cost(i+1, n) for each i in 1 ... n-1)
-
 with base dp(i, 0) = cost(0, i)
  */
 object Flattening {
