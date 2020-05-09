@@ -3,7 +3,7 @@ package hackerrank
 /*
 https://www.hackerrank.com/challenges/crab-graphs/problem
 
-Graph Theory
+[Graph Theory]
 
 Ford-Fulkerson Algorithm for Maximum Flow Problem
 
