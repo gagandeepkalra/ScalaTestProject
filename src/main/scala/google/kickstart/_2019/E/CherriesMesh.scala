@@ -1,6 +1,10 @@
-package GoogleCodeJam2019RoundE
+package google.kickstart._2019.E
 
 /*
+https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050edb/0000000000170721
+
+[Graph Theory]
+
 Connected components
  */
 object CherriesMesh {
