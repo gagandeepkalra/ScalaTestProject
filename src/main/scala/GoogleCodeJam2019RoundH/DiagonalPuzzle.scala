@@ -4,7 +4,20 @@ import scala.collection.mutable
 
 /*
 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050edd/00000000001a2835
-# Bipartite Graph
+
+[Bipartite Graph]
+
+we create a new graph where each diagonal is a vertex, two vertices have a `same` edge if intersected at a black cell
+otherwise a `different` edge if intersected at a white cell. The graph is bipartite in nature. 
+
+We have entangled the vertices.
+
+We'll attempt to color this graph (there'll be at most 2 colors used because bipartite). A color on each vertex will now 
+correspond to the action (diagonal reversal).
+
+Depth first search to find count of each color in that component.
+
+Result = Accumulate minimum of each color for each component
  */
 object DiagonalPuzzle {
 
