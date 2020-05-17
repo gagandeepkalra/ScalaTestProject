@@ -1,4 +1,4 @@
-package GoogleCodeJam2019RoundH
+package google.kickstart._2019.H
 
 import scala.collection.mutable
 

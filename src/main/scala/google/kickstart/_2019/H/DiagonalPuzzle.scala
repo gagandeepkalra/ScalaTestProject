@@ -1,4 +1,4 @@
-package GoogleCodeJam2019RoundH
+package google.kickstart._2019.H
 
 import scala.collection.mutable
 
@@ -8,11 +8,11 @@ https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050edd/00000
 [Bipartite Graph]
 
 we create a new graph where each diagonal is a vertex, two vertices have a `same` edge if intersected at a black cell
-otherwise a `different` edge if intersected at a white cell. The graph is bipartite in nature. 
+otherwise a `different` edge if intersected at a white cell. The graph is bipartite in nature.
 
 We have entangled the vertices.
 
-We'll attempt to color this graph (there'll be at most 2 colors used because bipartite). A color on each vertex will now 
+We'll attempt to color this graph (there'll be at most 2 colors used because bipartite). A color on each vertex will now
 correspond to the action (diagonal reversal).
 
 Depth first search to find count of each color in that component.
@@ -31,7 +31,6 @@ object DiagonalPuzzle {
         val graph: Graph[Int] =
           mutable
             .Map[Int, (mutable.Set[Int], mutable.Set[Int])]()
-            .withDefaultValue((mutable.Set.empty[Int], mutable.Set.empty[Int]))
 
         val diagonals = 2 * n - 1
 
