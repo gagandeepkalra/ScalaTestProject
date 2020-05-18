@@ -1,7 +1,12 @@
-package GoogleCodeJam2019RoundG
+package google.kickstart._2019.G
 
 /*
 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050e02/000000000018fe36
+
+[Array]
+
+we reduce all numbers to there set bit counters. Now to find k we start at the most significant bit and do best effort to
+include a set bit for k. For this we use an estimate for the rest of the bits to not go over m. Linear time.
  */
 object TheEquation {
 
