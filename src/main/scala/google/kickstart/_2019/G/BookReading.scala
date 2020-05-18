@@ -1,7 +1,11 @@
-package GoogleCodeJam2019RoundG
+package google.kickstart._2019.G
 
 /*
 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050e02/000000000018fd0d
+
+[Array]
+
+Use a map and a set to avoid repeated traversals
  */
 object BookReading {
 
