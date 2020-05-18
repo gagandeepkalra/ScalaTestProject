@@ -1,9 +1,11 @@
-package GoogleCodeJam2019RoundG
+package google.kickstart._2019.G
 
 import algorithms.SegmentTree
 
 /*
 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050e02/000000000018fd5e
+
+[Meet In The Middle] [Segment Trees]
  */
 object Shifts {
 
@@ -37,17 +39,14 @@ object Shifts {
         findPairs(start = n / 2, endExclusive = n).reverse
 
       // first half for querying, second half for inserting
-      val possibleValues =
-        (firstHalf.map(h - _._2) ++ secondHalfReversed.map(_._2)).toSet
+      val possibleValues = (firstHalf.map(h - _._2) ++ secondHalfReversed.map(_._2)).toSet
       val size = possibleValues.size
       val mappedToRange = mapToRange(possibleValues)
 
       val tree = new SegmentTree(new Array[Int](size), _ + _)
 
       @scala.annotation.tailrec
-      def loop(fList: List[(Long, Long)],
-               sList: List[(Long, Long)],
-               result: Long = 0L): Long = {
+      def loop(fList: List[(Long, Long)], sList: List[(Long, Long)], result: Long = 0L): Long = {
         fList match {
           case Nil => result
           case (fa, fb) :: fTail =>
@@ -59,12 +58,8 @@ object Shifts {
               case (_, sb) => tree.update(mappedToRange(sb), _ + 1)
             }
 
-            // add to result values greater than or equal to lowerB5
-            loop(
-              fTail,
-              sTail,
-              result + tree.query(mappedToRange(lowerB), size - 1)
-            )
+            // add to result values greater than or equal to lowerB
+            loop(fTail, sTail, result + tree.query(mappedToRange(lowerB), size - 1))
         }
       }
 
