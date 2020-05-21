@@ -11,7 +11,7 @@ object _230 {
 
   sealed trait Tree
 
-  case class TreeNode(value: Int = 0, left: Tree, right: Tree)
+  case class TreeNode(value: Int = 0, left: Tree, right: Tree) extends Tree
 
   object Empty extends Tree
 
@@ -23,11 +23,8 @@ object _230 {
     root match {
       case Empty => Left(k)
       case TreeNode(value, left, right) =>
-        recur(left, k) match {
-          case Left(kRemaining) =>
-            if (kRemaining == 1) Right(value) else recur(right, kRemaining - 1)
-          case _ => _
-        }
+        recur(left, k).left
+          .flatMap(kRemaining => if (kRemaining == 1) Right(value) else recur(right, kRemaining - 1))
     }
   }
 }
