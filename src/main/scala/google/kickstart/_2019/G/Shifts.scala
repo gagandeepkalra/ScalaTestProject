@@ -43,7 +43,7 @@ object Shifts {
       val size = possibleValues.size
       val mappedToRange = mapToRange(possibleValues)
 
-      val tree = SegmentTree[Int](0, size, _ + _)
+      val tree = SegmentTree[Int](0, size, (_: Int) + (_: Int))
 
       @scala.annotation.tailrec
       def loop(fList: List[(Long, Long)], sList: List[(Long, Long)], result: Long = 0L): Long = {

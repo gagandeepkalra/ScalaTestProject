@@ -1,6 +1,6 @@
 package algorithms
 
-sealed abstract class Tree[+A] {
+sealed trait Tree[+A] {
   def isEmpty: Boolean
 
   /**

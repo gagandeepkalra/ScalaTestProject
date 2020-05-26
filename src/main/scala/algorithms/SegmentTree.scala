@@ -1,5 +1,7 @@
 package algorithms
 
+import scala.reflect.ClassTag
+
 class SegmentTree[A] private(segmentArr: Array[A], l: Int, r: Int, combine: (A, A) => A) {
 
   def update(idx: Int, g: A => A): Unit = {
@@ -35,12 +37,12 @@ class SegmentTree[A] private(segmentArr: Array[A], l: Int, r: Int, combine: (A, 
 
 object SegmentTree {
 
-  def apply[A](l: Int, r: Int, combine: (A, A) => A): SegmentTree[A] = {
+  def apply[A: ClassTag](l: Int, r: Int, combine: (A, A) => A): SegmentTree[A] = {
     val segmentArr = new Array[A](4 * (r - l + 1))
     new SegmentTree(segmentArr, l, r, combine)
   }
 
-  def apply[A](elements: IndexedSeq[A], combine: (A, A) => A): SegmentTree[A] = {
+  def apply[A: ClassTag](elements: IndexedSeq[A], combine: (A, A) => A): SegmentTree[A] = {
     val segmentArr = new Array[A](4 * elements.length)
 
     def preCompute(l: Int, r: Int, i: Int): Unit = {

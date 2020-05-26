@@ -14,9 +14,9 @@ object CircuitBoard {
 
       val grid = (0 until rows).map(_ => io.StdIn.readLine.split(" ").map(_.toInt))
 
-      val minSegmentTrees = (0 until rows).map(r => SegmentTree[Int](grid(r), _ min _))
+      val minSegmentTrees = (0 until rows).map(r => SegmentTree[Int](grid(r), (_: Int) min (_: Int)))
 
-      val maxSegmentTrees = (0 until rows).map(r => SegmentTree[Int](grid(r), _ max _))
+      val maxSegmentTrees = (0 until rows).map(r => SegmentTree[Int](grid(r), (_: Int) max (_: Int)))
 
       def findMaxDifferenceForRow(row: Int)(l: Int, r: Int): Int = {
         maxSegmentTrees(row).query(l, r) - minSegmentTrees(row).query(l, r)
