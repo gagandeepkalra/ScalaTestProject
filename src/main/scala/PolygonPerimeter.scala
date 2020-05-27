@@ -1,6 +1,9 @@
 import java.util.Scanner
 import scala.collection.mutable.ListBuffer
 
+/**
+ * https://www.hackerrank.com/challenges/convex-hull-fp/problem
+ */
 object PolygonPerimeter {
 
   case class Point(x: Int, y: Int) {
