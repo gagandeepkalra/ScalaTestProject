@@ -1,6 +1,6 @@
 package algorithms.arrays
 
-object RectangleInAHistogram {
+object Arrays {
   def largestRectangleInAHistogram(seq: Seq[Int]): Int = {
 
     @scala.annotation.tailrec
