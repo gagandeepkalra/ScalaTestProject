@@ -2,7 +2,7 @@ package algorithms.sets
 
 import scala.collection.mutable
 
-object Sets {
+object SortedSetExtras {
 
   /**
    * Reverse iterator extension for SortedSet/TreeSet
@@ -41,4 +41,5 @@ object Sets {
       }
     }
   }
+
 }

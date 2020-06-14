@@ -1,7 +1,7 @@
 package GoogleCodeJam2019RoundC
 
 import algorithms.SegmentTree
-import algorithms.arrays.RectangleInAHistogram.largestRectangleInAHistogram
+import algorithms.arrays.Stack.largestRectangleInAHistogram
 
 object CircuitBoard {
 
