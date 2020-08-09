@@ -10,7 +10,7 @@ https://codeforces.com/contest/1399/problem/E1
 We calculate contribution of each edge by calculating number of leaves if we go down it. Afterwards, we use a max heap to
 reduce the maximals of the weights only that the heap is ordered by diffs = w*c - w/2*c, courtesy integer division
 
-todo: Doesn't pass; TLE
+todo: Doesn't pass; TLE, see java version
  */
 object WeightsDivisionEasy {
 
