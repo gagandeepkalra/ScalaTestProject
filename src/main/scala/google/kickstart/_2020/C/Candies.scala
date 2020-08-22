@@ -1,6 +1,6 @@
 package google.kickstart._2020.C
 
-import algorithms.PersistentSegmentTree
+import algorithms.range.PersistentSegmentTree
 
 /*
 https://codingcompetitions.withgoogle.com/kickstart/round/000000000019ff43/0000000000337b4d

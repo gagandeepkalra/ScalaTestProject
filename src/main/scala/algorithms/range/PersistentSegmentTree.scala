@@ -1,4 +1,4 @@
-package algorithms
+package algorithms.range
 
 sealed trait Tree[+A] {
   def isEmpty: Boolean
