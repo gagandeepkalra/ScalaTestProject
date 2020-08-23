@@ -1,5 +1,6 @@
 package google.kickstart._2020.D
 
+import algorithms.arrays.Stack
 import algorithms.range.SparseTable
 
 /*
@@ -31,18 +32,6 @@ idea is simple, rank is monotonic increasing from s on both sides, once we refle
  */
 object LockedDoors {
 
-  def leftView[A](seq: IndexedSeq[A])(implicit ordering: Ordering[A]): IndexedSeq[Int] = {
-    val result = new Array[Int](seq.length)
-
-    seq.indices.foldLeft[List[Int]](Nil) { (stack, idx) =>
-      val uStack = stack.dropWhile(i => ordering.lt(seq(i), seq(idx)))
-      result(idx) = uStack.headOption.getOrElse(-1)
-      idx :: uStack
-    }
-
-    result
-  }
-
   def main(args: Array[String]): Unit = {
     for (t <- 1 to io.StdIn.readInt) {
       val Array(n, q) = io.StdIn.readLine.split(" ").map(_.toInt)
@@ -50,7 +39,7 @@ object LockedDoors {
 
       val sparseTable = new SparseTable(n - 1, (x, y) => if (gates(x) > gates(y)) x else y)
 
-      val left: IndexedSeq[Int] = leftView(gates)
+      val left: IndexedSeq[Int] = Stack.leftView(gates)
 
       val result = (1 to q).map { _ =>
         val Array(s, k) = io.StdIn.readLine.split(" ").map(_.toInt - 1)
