@@ -1,5 +1,10 @@
 package adventOfCode
 
+/**
+ * 01: find the two entries that sum to 2020 and then multiply those two numbers together.
+ *
+ * 02: find the three entries that sum to 2020 and then multiply those two numbers together.
+ */
 object _01_ReportRepair {
 
   def pairSumTo2020(input: List[Int]): Option[Int] = {
