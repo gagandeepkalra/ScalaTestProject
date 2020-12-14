@@ -2,11 +2,55 @@ package adventOfCode
 
 object _01_ReportRepair {
 
-  def sumTo2020(entries: Set[Int]): Option[Int] =
-    entries.find(e => entries(2020 - e)).map(e => e * (2020 - e))
+  def pairSumTo2020(input: List[Int]): Option[Int] = {
+    val entries: Map[Int, Int] =
+      input.groupBy(identity).map { case (k, v) => k -> v.size }
+    entries
+      .find {
+        case (e, f) if e == 2020 - e => f > 1
+        case (e, _)                  => entries.contains(2020 - e)
+      }
+      .map { case (e, _) => e * (2020 - e) }
+  }
+
+  def trioSumTo2020(input: List[Int]): Option[Long] = {
+    val entries: Map[Int, Int] =
+      input.groupBy(identity).map { case (k, v) => k -> v.size }
+
+    val arr = input.toArray
+
+    def find(): Option[Long] = {
+      for {
+        i <- arr.indices
+        j <- i + 1 until arr.length
+      } {
+        val f = arr(i)
+        val s = arr(j)
+        val t = 2020 - f - s
+
+        val result = {
+          if (f == s) {
+            if (f == t) entries(f) >= 3 else entries.getOrElse(t, 0) >= 1
+          } else if (f == t) {
+            entries(f) >= 2
+          } else if (s == t) {
+            entries(s) >= 2
+          } else {
+            entries.getOrElse(t, 0) >= 1
+          }
+        }
+
+        if (result) return Some(1L * f * s * t)
+      }
+
+      None
+    }
+
+    find()
+  }
 
   def main(args: Array[String]): Unit = {
-    val input = Set(
+    val input = List(
       1583, 1295, 1747, 1628, 1756, 1992, 1984, 1990, 2006, 1626, 1292, 1561,
       1697, 1249, 2001, 1822, 1715, 1951, 1600, 1615, 1769, 1825, 1335, 1987,
       1745, 1660, 1952, 1437, 1348, 1968, 615, 1847, 476, 1346, 1357, 1838,
@@ -26,7 +70,9 @@ object _01_ReportRepair {
       2000, 1978, 1938, 1707, 1337, 1362, 1263
     )
 
-    sumTo2020(input).foreach(println)
+    pairSumTo2020(input).foreach(println)
+
+    trioSumTo2020(input).foreach(println)
   }
 
 }
