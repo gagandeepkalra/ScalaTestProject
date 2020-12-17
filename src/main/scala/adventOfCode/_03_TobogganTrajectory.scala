@@ -2,6 +2,10 @@ package adventOfCode
 
 import scala.annotation.tailrec
 
+/**
+ * Determine the number of trees ("#") you would encounter if, for each of the following slopes, you start at the top-left
+ * corner and traverse the map all the way to the bottom.
+ */
 object _03_TobogganTrajectory {
 
   def countTrees(grid: Vector[String], right: Int, down: Int): Int = {
