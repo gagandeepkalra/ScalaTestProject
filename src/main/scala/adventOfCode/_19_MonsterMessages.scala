@@ -4,28 +4,28 @@ import scala.annotation.tailrec
 import scala.util.matching.Regex
 
 /**
- * The rules for valid messages (the top part of your puzzle input) are numbered and build upon each other. For example:
- *
- * 0: 1 2
- * 1: "a"
- * 2: 1 3 | 3 1
- * 3: "b"
- * Some rules, like 3: "b", simply match a single character (in this case, b).
- *
- * The remaining rules list the sub-rules that must be followed; for example, the rule 0: 1 2 means that to match rule 0,
- * the text being checked must match rule 1, and the text after the part that matched rule 1 must then match rule 2.
- *
- * Some of the rules have multiple lists of sub-rules separated by a pipe (|). This means that at least one list of sub-rules
- * must match. (The ones that match might be different each time the rule is encountered.) For example, the rule 2: 1 3 | 3 1 means
- * that to match rule 2, the text being checked must match rule 1 followed by rule 3 or it must match rule 3 followed by rule 1.
- *
- * part 02:
- *
- * Some recursive rules are added, find number of inputs satisfying this updated grammar
- * 8: 42 | 42 8
- * 11: 42 31 | 42 11 31
- *
- */
+  * The rules for valid messages (the top part of your puzzle input) are numbered and build upon each other. For example:
+  *
+  * 0: 1 2
+  * 1: "a"
+  * 2: 1 3 | 3 1
+  * 3: "b"
+  * Some rules, like 3: "b", simply match a single character (in this case, b).
+  *
+  * The remaining rules list the sub-rules that must be followed; for example, the rule 0: 1 2 means that to match rule 0,
+  * the text being checked must match rule 1, and the text after the part that matched rule 1 must then match rule 2.
+  *
+  * Some of the rules have multiple lists of sub-rules separated by a pipe (|). This means that at least one list of sub-rules
+  * must match. (The ones that match might be different each time the rule is encountered.) For example, the rule 2: 1 3 | 3 1 means
+  * that to match rule 2, the text being checked must match rule 1 followed by rule 3 or it must match rule 3 followed by rule 1.
+  *
+  * part 02:
+  *
+  * Some recursive rules are added, find number of inputs satisfying this updated grammar
+  * 8: 42 | 42 8
+  * 11: 42 31 | 42 11 31
+  *
+  */
 object _19_MonsterMessages {
   val withCharValue: Regex            = "^(\\d+): \"([a-z])\"$".r
   val withSingleIntValue: Regex       = "^(\\d+): (\\d+)$".r
@@ -55,13 +55,13 @@ object _19_MonsterMessages {
         parseRules(tail, acc + (n.toInt -> SingleIntegerOr(i.toInt, j.toInt)))
       case withDoubleIntDoubleValue(n, i, j, k, l) :: tail =>
         parseRules(tail, acc + (n.toInt -> DoubleIntegerOr((i.toInt, j.toInt), (k.toInt, l.toInt))))
-      case _ => ???
     }
   }
 
   /**
-   * Unused
-   */
+    * First approach:
+    * Generate all possible strings satisfying this grammar.
+    */
   def generateAllPossibilities(v: Value)(implicit store: Map[Int, Value]): Set[String] = {
     v match {
       case Character(c)     => Set(c.toString)
@@ -105,6 +105,10 @@ object _19_MonsterMessages {
     }
   }
 
+  /**
+    * Second approach:
+    * Generate Regex satisfying this grammar.
+    */
   def generateRegex(key: Int)(implicit store: Map[Int, Value]): Regex = {
     def generate(k: Int): String = {
       store(k) match {
@@ -122,10 +126,10 @@ object _19_MonsterMessages {
   }
 
   /**
-   * 8: 42 | 42 8
-   * 11: 42 31 | 42 11 31
-   */
-  def generateRegexWithRulesOveridee(key: Int)(implicit store: Map[Int, Value]): Regex = {
+    * 8: 42 | 42 8
+    * 11: 42 31 | 42 11 31
+    */
+  def generateRegexWithRulesOverride(key: Int)(implicit store: Map[Int, Value]): Regex = {
 
     def generate(k: Int): String = {
       (k, store(k)) match {
@@ -147,7 +151,7 @@ object _19_MonsterMessages {
     s"^${generate(key)}$$".r
   }
 
-  def solve(input: List[String])(implicit regex: (Int, Map[Int, Value]) => Regex): Int = {
+  def solveRegex(input: List[String])(implicit regex: (Int, Map[Int, Value]) => Regex): Int = {
     val (rulesInput, rest) = input.span(_.nonEmpty)
     val rules = {
       parseRules(rulesInput)
@@ -157,6 +161,163 @@ object _19_MonsterMessages {
     val validStrings = regex(0, rules)
 
     tests.count(_.matches(validStrings.toString))
+  }
+
+  /**
+    * Third approach:
+    * Convert the given grammar to Chomsky Normal Form
+    *
+    * A context free grammar (CFG) is in Chomsky Normal Form (CNF) if all production rules satisfy one of the following conditions:
+    *
+    * A non-terminal generating a terminal (e.g.; X->x)
+    * A non-terminal generating two non-terminals (e.g.; X->YZ)
+    * Start symbol generating ε. (e.g.; S-> ε)
+    */
+  sealed trait CNFValue
+  case class Terminal(c: Char)    extends CNFValue
+  case class Pair(i: Int, j: Int) extends CNFValue
+
+  def CNFGrammar(rules: Map[Int, List[Value]]): Map[Int, List[CNFValue]] = {
+    val singlesFlat: Map[Int, List[Int]] = rules.toList
+      .flatMap {
+        case (k, ls) =>
+          ls.collect {
+            case SingleInteger(i)      => List(k -> i)
+            case SingleIntegerOr(i, j) => List(k -> i, k -> j)
+          }.flatten
+      }
+      .groupBy(_._1)
+      .map { case (k, vs) => k -> vs.map(_._2) }
+
+    val rest: Map[Int, List[Value]] = rules
+      .map {
+        case (k, ls) =>
+          k -> ls.collect {
+            case SingleInteger(i)      => None
+            case SingleIntegerOr(i, j) => None
+            case default               => Some(default)
+          }.flatten
+      }
+
+    val order: List[Int] = {
+      val visited = collection.mutable.Set.empty[Int]
+
+      var stack = List.empty[Int]
+
+      // we use topological sort to find order required for unit rules removal
+      def topologicalSort(i: Int): Unit =
+        if (!visited(i)) {
+          singlesFlat.getOrElse(i, Nil).foreach(topologicalSort)
+          visited.add(i)
+          stack ::= i
+        }
+
+      singlesFlat.keys.foreach(topologicalSort)
+
+      stack.reverse
+    }
+
+    val unitRemoval = order.foldLeft(rest) {
+      case (acc, i) =>
+        val ks = singlesFlat.getOrElse(i, Nil).flatMap(acc.getOrElse(_, Nil)) // i -> j -> k's
+
+        acc + (i -> (ks ::: acc.getOrElse(i, Nil)).distinct)
+    }
+
+    @tailrec
+    def loop(store: List[(Int, Value)], acc: List[(Int, CNFValue)] = Nil)(extra: Int = -1): Map[Int, List[CNFValue]] =
+      store match {
+        case Nil =>
+          acc.groupBy(_._1).map { case (k, vs) => k -> vs.map(_._2).distinct }
+        case (key, Character(c)) :: tail =>
+          loop(tail, (key -> Terminal(c)) :: acc)(extra)
+        case (key, DoubleInteger(i, j)) :: tail =>
+          loop(tail, (key -> Pair(i, j)) :: acc)(extra)
+        case (key, TripleInteger(i, j, k)) :: tail =>
+          loop(tail, (key -> Pair(i, extra)) :: (extra -> Pair(j, k)) :: acc)(extra - 1)
+        case (key, DoubleIntegerOr((i, j), (k, l))) :: tail =>
+          loop(tail, (key -> Pair(i, j)) :: (key -> Pair(k, l)) :: acc)(extra)
+      }
+
+    val tripleRemoval = loop(unitRemoval.toList.flatMap { case (k, vs) => vs.map(k -> _) })()
+
+    tripleRemoval
+  }
+
+  /**
+    * CYK algorithm is a parsing algorithm for context free grammar.
+    * In order to apply CYK algorithm to a grammar, it must be in Chomsky Normal Form. It uses a dynamic programming algorithm to tell whether a string is in the language of a grammar (Recognizer).
+    */
+  def cyk(input: String)(implicit reverseRules: Map[CNFValue, List[Int]]): List[Int] = {
+    val n = input.length
+
+    val grid = Array.fill[List[Int]](n, n)(Nil) // grid(i)(j) -  starting at index i going j steps
+
+    for {
+      i <- 0 until n
+    } grid(i)(0) = reverseRules(Terminal(input(i)))
+
+    for {
+      j <- 1 until n
+      i <- 0 until n if i + j < n
+    } grid(i)(j) = {
+      for {
+        k <- 0 until j
+        f <- grid(i)(k)
+        s <- grid(i + k + 1)(j - k - 1)
+        r <- reverseRules(Pair(f, s))
+      } yield r
+    }.toList
+
+    grid(0)(n - 1)
+  }
+
+  def solveCYKPart01(input: List[String]): Int = {
+    val (rulesInput, rest) = input.span(_.nonEmpty)
+    val rules = {
+      parseRules(rulesInput)
+    }
+
+    val CNFRules = CNFGrammar(rules.map { case (k, v) => k -> List(v) })
+    val reverseCNFRules: Map[CNFValue, List[Int]] =
+      CNFRules.toList
+        .flatMap { case (k, v) => v.map(_ -> k) }
+        .groupBy(_._1)
+        .map { case (k, vs) => k -> vs.map(_._2) }
+        .withDefaultValue(Nil)
+
+    val tests = rest.tail
+
+    tests.count(cyk(_)(reverseCNFRules).contains(0))
+  }
+
+  /**
+    * Overrides-
+    * 8: 42 | 42 8
+    * 11: 42 31 | 42 11 31
+    */
+  def solveCYKPart02(input: List[String]): Int = {
+    val (rulesInput, rest) = input.span(_.nonEmpty)
+    val rules = {
+      parseRules(rulesInput)
+    }
+
+    val updatedRules = rules.map { case (k, v) => k -> List(v) } +
+      (8  -> List(SingleInteger(42), DoubleInteger(42, 8))) +
+      (11 -> List(DoubleInteger(42, 31), TripleInteger(42, 11, 31)))
+
+    val CNFRules = CNFGrammar(updatedRules)
+
+    val reverseCNFRules: Map[CNFValue, List[Int]] =
+      CNFRules.toList
+        .flatMap { case (k, v) => v.map(_ -> k) }
+        .groupBy(_._1)
+        .map { case (k, vs) => k -> vs.map(_._2) }
+        .withDefaultValue(Nil)
+
+    val tests = rest.tail
+
+    tests.count(cyk(_)(reverseCNFRules).contains(0))
   }
 
   def main(args: Array[String]): Unit = {
@@ -759,7 +920,10 @@ object _19_MonsterMessages {
                   |bbbabbbaaabaabbbbbaabaaa
                   |abbabbabbaabbaaababbbabb""".stripMargin.split("\n")
 
-    println(solve(input.toList)(generateRegex(_)(_)))
-    println(solve(input.toList)(generateRegexWithRulesOveridee(_)(_)))
+    println(solveRegex(input.toList)(generateRegex(_)(_)))
+    println(solveRegex(input.toList)(generateRegexWithRulesOverride(_)(_)))
+
+    println(solveCYKPart01(input.toList))
+    println(solveCYKPart02(input.toList))
   }
 }
