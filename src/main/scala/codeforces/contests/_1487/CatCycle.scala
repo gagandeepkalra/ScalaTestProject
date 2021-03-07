@@ -1,5 +1,8 @@
 package codeforces.contests._1487
 
+/*
+http://codeforces.com/contest/1487/problem/B
+ */
 object CatCycle {
 
   def main(args: Array[String]): Unit = {
