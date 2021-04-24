@@ -3,15 +3,17 @@ package google.kickstart._2019.E
 /*
 https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050edb/00000000001707b9
 
+count numbers in range [l, r] where diff of even and odd divisors is <= 2
+
 [Sieve of Eratosthenes]
 
-given n = x^p * y *q * z^r then
+given n = x^p * y^q * z^r then // (x, y, z) are primes
 #divisors = (p+1) * (q+1) * (r+1)
 #odd_divisors = #divisors / ((a+1) in 2^a divides n)
 
 Proposition: There's only one prime above √𝑛
-Proof: Suppose 𝑛 is a positive integer s.t. 𝑛=𝑝𝑞, where 𝑝 and 𝑞 are prime numbers. Assume 𝑝>√𝑛 and 𝑞>√𝑛. Multiplying these
-inequalities we have 𝑝.𝑞>√𝑛.√𝑛, which implies 𝑝𝑞>𝑛. This is a contradiction to our hypothesis 𝑛=𝑝𝑞. Hence we can conclude
+Proof: Suppose 𝑛 is a positive integer s.t. 𝑛=𝑝𝑞, where 𝑝 and 𝑞 are prime numbers. Assume to the contrary 𝑝>√𝑛 and 𝑞>√𝑛.
+Multiplying these inequalities we have 𝑝.𝑞>√𝑛.√𝑛, which implies 𝑝𝑞>𝑛. This is a contradiction to our hypothesis 𝑛=𝑝𝑞. Hence we can conclude
 that either 𝑝≤√𝑛 or 𝑞≤√𝑛.
  */
 object StreetCheckers {
@@ -28,12 +30,12 @@ object StreetCheckers {
   }
 
   @scala.annotation.tailrec
-  private def countTwos(n: Int, acc: Int = 0): Int =
+  private def countTwos(n: Int, acc: Int = 0): Int = // number of times can be divided by 2
     if (n > 0 && (n & 1) == 0) countTwos(n >> 1, acc + 1) else acc
 
   def solve(l: Int, r: Int): Int = {
     val divisors = Array.fill[Int](r - l + 1)(1)
-    val sieve = (l to r).toArray
+    val sieve: Array[Int] = (l to r).toArray
 
     val sqrtR = math.sqrt(r).ceil.toInt
 
@@ -59,7 +61,7 @@ object StreetCheckers {
 
     divisors.indices.foldLeft(0) { (acc, i) =>
       val total = {
-        if (sieve(i) == 1) divisors(i) else divisors(i) * 2
+        if (sieve(i) == 1) divisors(i) else divisors(i) * 2 // if prime, else there's one prime above √𝑛, divisors double in that case
       }
       val c = countTwos(i + l)
       val odd = total / (c + 1)
