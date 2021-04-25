@@ -5,7 +5,7 @@ https://codingcompetitions.withgoogle.com/kickstart/round/0000000000050edb/00000
 
 count numbers in range [l, r] where diff of even and odd divisors is <= 2
 
-[Sieve of Eratosthenes]
+[Sieve of Eratosthenes, Segment Sieve]
 
 given n = x^p * y^q * z^r then // (x, y, z) are primes
 #divisors = (p+1) * (q+1) * (r+1)
