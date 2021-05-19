@@ -71,7 +71,7 @@ object ConsecutivePrimes {
   }
 
   def infiniteStream(from: Long, step: Int): Stream[Long] =
-    infiniteStream(from + step, step).#::(from)
+    from #:: infiniteStream(from + step, step)
 
   def main(args: Array[String]): Unit = {
 
