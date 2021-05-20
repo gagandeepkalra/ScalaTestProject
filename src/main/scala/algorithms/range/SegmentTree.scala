@@ -2,6 +2,9 @@ package algorithms.range
 
 import scala.reflect.ClassTag
 
+/**
+ * Mutable Segment Tree
+ */
 class SegmentTree[A] private(segmentArr: Array[A], l: Int, r: Int, combine: (A, A) => A) {
 
   def update(idx: Int, g: A => A): Unit = {

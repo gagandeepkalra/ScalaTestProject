@@ -1,112 +1,79 @@
 package algorithms.range
 
-sealed trait Tree[+A] {
+private sealed trait Tree[+A] {
   def isEmpty: Boolean
+
+  /**
+    * unsafe downcast
+    */
+  def asNode[B >: A]: Node[B]
 }
 
-case object Leaf extends Tree[Nothing] {
+private case object Leaf extends Tree[Nothing] {
   def isEmpty = true
+
+  override def asNode[B >: Nothing]: Node[B] = throw new IllegalAccessError("not a Node!")
 }
 
-case class Node[A](value: A, left: Tree[A], right: Tree[A], update: Option[A => A] = None) extends Tree[A] {
+private case class Node[+A](value: A, left: Tree[A], right: Tree[A]) extends Tree[A] {
   def isEmpty: Boolean = false
 
-  def map[B](f: A => B): Node[B] = Node[B](f(value), Leaf, Leaf)
+  override def asNode[B >: A]: Node[B] = this
 }
 
+/**
+  * Immutable Segment Tree
+  */
 case class PersistentSegmentTree[A] private (root: Node[A], l: Int, r: Int, combine: (A, A) => A) {
 
-  def query(start: Int, endIncl: Int): (A, PersistentSegmentTree[A]) = {
-    val (result, updated) = query(root, l, r, start, endIncl)
+  def query(start: Int, endIncl: Int): A = {
+    def query(root: Node[A], sR: Int, eR: Int, sD: Int, eD: Int): A = {
+      if (sR == sD && eR == eD) root.value
+      else {
+        val m = (sR + eR) / 2
 
-    (result, this.copy(root = updated))
-  }
+        val lT = root.left.asNode[A]
+        val rT = root.right.asNode[A]
 
-  def update(i: Int, g: A => A): PersistentSegmentTree[A] =
-    update(i, i, g)
-
-  def update(start: Int, endIncl: Int, g: A => A): PersistentSegmentTree[A] =
-    this.copy(root = update(root, l, r, start, endIncl)(g))
-
-  private def pushUpdateDown(node: Node[A]): Node[A] = {
-    node.update.fold(node) { g =>
-      val leftUpdated = node.left match {
-        case Leaf                          => Leaf
-        case n @ Node(value, _, _, update) => n.copy(value = g(value), update = update.map(g compose _).orElse(Some(g)))
-      }
-
-      val rightUpdated = node.right match {
-        case Leaf                          => Leaf
-        case n @ Node(value, _, _, update) => n.copy(value = g(value), update = update.map(g compose _).orElse(Some(g)))
-      }
-
-      node.copy(left = leftUpdated, right = rightUpdated, update = None)
-    }
-  }
-
-  private def query(node: Node[A], sR: Int, eR: Int, sD: Int, eD: Int): (A, Node[A]) = {
-    if (sR == sD && eR == eD) (node.value, node)
-    else {
-      val updatedNode = pushUpdateDown(node)
-
-      val m = (sR + eR) / 2
-
-      val lT = updatedNode.left.asInstanceOf[Node[A]]
-      val rT = updatedNode.right.asInstanceOf[Node[A]]
-
-      if (eD <= m) {
-        val (lResult, uL) = query(lT, sR, m, sD, m)
-
-        (combine(lResult, rT.value), updatedNode.copy(value = combine(uL.value, rT.value), left = uL))
-      } else if (m < sD) {
-        val (rResult, uR) = query(rT, m + 1, eR, m + 1, eD)
-
-        (combine(lT.value, rResult), updatedNode.copy(value = combine(lT.value, uR.value), right = uR))
-      } else {
-        val (lResult, uL) = query(lT, sR, m, sD, m)
-        val (rResult, uR) = query(rT, m + 1, eR, m + 1, eD)
-
-        (combine(lResult, rResult), Node(value = combine(uL.value, uR.value), left = uL, right = uR))
+        if (eD <= m)
+          query(lT, sR, m, sD, eD)
+        else if (m < sD)
+          query(rT, m + 1, eR, sD, eD)
+        else
+          combine(query(lT, sR, m, sD, m), query(rT, m + 1, eR, m + 1, eD))
       }
     }
+
+    query(root, l, r, start, endIncl)
   }
 
-  private def update(node: Node[A], sR: Int, eR: Int, sD: Int, eD: Int)(implicit g: A => A): Node[A] =
-    if (sR == sD && eR == eD)
-      node.copy(value = g(node.value), update = node.update.map(g compose _).orElse(Some(g)))
-    else {
-      val updatedNode = pushUpdateDown(node)
+  def update(i: Int, g: A => A): PersistentSegmentTree[A] = {
+    def update(root: Node[A], sR: Int, eR: Int): Node[A] = {
+      if (sR == eR) root.copy(value = g(root.value))
+      else {
+        val m = (sR + eR) / 2
 
-      val m = (sR + eR) / 2
+        val lT = root.left.asNode[A]
+        val rT = root.right.asNode[A]
 
-      val lT = updatedNode.left.asInstanceOf[Node[A]]
-      val rT = updatedNode.right.asInstanceOf[Node[A]]
+        val (uL, uR) = if (i <= m) (update(lT, sR, m), rT) else (lT, update(rT, m + 1, eR))
 
-      if (eD <= m) {
-        val uL = update(lT, sR, m, sD, m)
-
-        updatedNode.copy(value = combine(uL.value, rT.value), left = uL)
-      } else if (m < sD) {
-        val uR = update(rT, m + 1, eR, m + 1, eD)
-
-        updatedNode.copy(value = combine(lT.value, uR.value), right = uR)
-      } else {
-        val uL = update(lT, sR, m, sD, m)
-        val uR = update(rT, m + 1, eR, m + 1, eD)
-
-        Node(value = combine(uL.value, uR.value), left = uL, right = uR)
+        Node(combine(uL.value, uR.value), uL, uR)
       }
     }
+
+    this.copy(root = update(root, l, r))
+  }
 }
 
 object PersistentSegmentTree {
 
-  def apply[A](elements: IndexedSeq[A], combine: (A, A) => A): PersistentSegmentTree[A] =
+  def apply[A](elements: IndexedSeq[A], f: (A, A) => A): PersistentSegmentTree[A] =
     new PersistentSegmentTree(
-      root = makeRoot(start = 0, end = elements.length - 1, atIndex = elements, combine = combine),
+      root = makeRoot(end = elements.length - 1, atIndex = elements, combine = f),
       l = 0,
       r = elements.length - 1,
-      combine = combine
+      combine = f
     )
 
   def apply[A](start: Int, endIncl: Int, elements: Int => A, combine: (A, A) => A): PersistentSegmentTree[A] =
@@ -117,7 +84,7 @@ object PersistentSegmentTree {
       combine = combine
     )
 
-  private def makeRoot[A](start: Int, end: Int, atIndex: Int => A, combine: (A, A) => A): Node[A] = {
+  private def makeRoot[A](start: Int = 0, end: Int, atIndex: Int => A, combine: (A, A) => A): Node[A] = {
     def makeRoot(l: Int, r: Int): Node[A] = {
       if (l == r) Node(atIndex(l), Leaf, Leaf)
       else {

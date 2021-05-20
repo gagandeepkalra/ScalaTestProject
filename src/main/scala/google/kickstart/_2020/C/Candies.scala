@@ -40,9 +40,7 @@ object Candies {
               case "Q" =>
                 val l = x.toInt
                 val r = y.toInt
-                minusOnePower(l - 1) * {
-                  alternatingWeightedSumTree.query(l, r)._1 - (l - 1) * alternatingSumTree.query(l, r)._1
-                }
+                minusOnePower(l - 1) * alternatingWeightedSumTree.query(l, r) - (l - 1) * alternatingSumTree.query(l, r)
               case "U" =>
                 val i      = x.toInt
                 val newVal = y.toInt
