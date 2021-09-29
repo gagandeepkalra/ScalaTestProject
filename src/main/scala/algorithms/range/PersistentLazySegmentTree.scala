@@ -1,14 +1,14 @@
 package algorithms.range
 
-private sealed trait Tree[+A] {
+sealed trait Tree[+A] {
   def isEmpty: Boolean
 }
 
-private case object Leaf extends Tree[Nothing] {
+case object Leaf extends Tree[Nothing] {
   def isEmpty = true
 }
 
-private case class Node[A](value: A, left: Tree[A], right: Tree[A], update: Option[A => A] = None) extends Tree[A] {
+case class Node[A](value: A, left: Tree[A], right: Tree[A], update: Option[A => A] = None) extends Tree[A] {
   def isEmpty: Boolean = false
 
   def map[B](f: A => B): Node[B] = Node[B](f(value), Leaf, Leaf)

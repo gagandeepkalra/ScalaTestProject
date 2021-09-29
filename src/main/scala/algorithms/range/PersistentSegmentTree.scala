@@ -1,30 +1,11 @@
 package algorithms.range
 
-private sealed trait Tree[+A] {
-  def isEmpty: Boolean
-
-  /**
-    * unsafe downcast
-    */
-  def asNode[B >: A]: Node[B]
-}
-
-private case object Leaf extends Tree[Nothing] {
-  def isEmpty = true
-
-  override def asNode[B >: Nothing]: Node[B] = throw new IllegalAccessError("not a Node!")
-}
-
-private case class Node[+A](value: A, left: Tree[A], right: Tree[A]) extends Tree[A] {
-  def isEmpty: Boolean = false
-
-  override def asNode[B >: A]: Node[B] = this
-}
-
 /**
   * Immutable Segment Tree
   */
-case class PersistentSegmentTree[A] private (root: Node[A], l: Int, r: Int, combine: (A, A) => A) {
+case class PersistentSegmentTree[A] private (root: PersistentSegmentTree.Node[A], l: Int, r: Int, combine: (A, A) => A) {
+
+  import PersistentSegmentTree._
 
   def query(start: Int, endIncl: Int): A = {
     def query(root: Node[A], sR: Int, eR: Int, sD: Int, eD: Int): A = {
@@ -67,6 +48,27 @@ case class PersistentSegmentTree[A] private (root: Node[A], l: Int, r: Int, comb
 }
 
 object PersistentSegmentTree {
+
+  sealed trait Tree[+A] {
+    def isEmpty: Boolean
+
+    /**
+     * unsafe downcast
+     */
+    def asNode[B >: A]: Node[B]
+  }
+
+  case object Leaf extends Tree[Nothing] {
+    def isEmpty = true
+
+    override def asNode[B >: Nothing]: Node[B] = throw new IllegalAccessError("not a Node!")
+  }
+
+  case class Node[+A](value: A, left: Tree[A], right: Tree[A]) extends Tree[A] {
+    def isEmpty: Boolean = false
+
+    override def asNode[B >: A]: Node[B] = this
+  }
 
   def apply[A](elements: IndexedSeq[A], f: (A, A) => A): PersistentSegmentTree[A] =
     new PersistentSegmentTree(
